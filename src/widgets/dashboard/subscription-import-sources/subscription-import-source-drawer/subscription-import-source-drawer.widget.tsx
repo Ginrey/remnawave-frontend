@@ -36,6 +36,7 @@ interface FormValues {
     isEnabled: boolean
     fetchIntervalMinutes: number
     configProfileInboundUuid: string | null
+    importGroup: string | null
     fetchHeaders: HeaderRow[]
 }
 
@@ -72,6 +73,7 @@ export function SubscriptionImportSourceDrawerWidget(props: IProps) {
             isEnabled: true,
             fetchIntervalMinutes: 60,
             configProfileInboundUuid: null,
+            importGroup: null,
             fetchHeaders: []
         },
         validate: {
@@ -98,6 +100,7 @@ export function SubscriptionImportSourceDrawerWidget(props: IProps) {
                     isEnabled: editingSource.isEnabled,
                     fetchIntervalMinutes: editingSource.fetchIntervalMinutes,
                     configProfileInboundUuid: editingSource.configProfileInboundUuid,
+                    importGroup: editingSource.importGroup ?? null,
                     fetchHeaders: recordToRows(editingSource.fetchHeaders)
                 })
             } else {
@@ -130,13 +133,14 @@ export function SubscriptionImportSourceDrawerWidget(props: IProps) {
 
     const handleSubmit = (values: FormValues) => {
         const fetchHeaders = rowsToRecord(values.fetchHeaders)
+        const importGroup = values.importGroup?.trim() || null
         if (isEdit && editingSource) {
             updateSource({
                 route: { uuid: editingSource.uuid },
-                variables: { ...values, fetchHeaders }
+                variables: { ...values, importGroup, fetchHeaders }
             })
         } else {
-            createSource({ variables: { ...values, fetchHeaders } })
+            createSource({ variables: { ...values, importGroup, fetchHeaders } })
         }
     }
 
@@ -184,6 +188,17 @@ export function SubscriptionImportSourceDrawerWidget(props: IProps) {
                         label="Target Config Profile Inbound"
                         placeholder="Select inbound..."
                         {...form.getInputProps('configProfileInboundUuid')}
+                    />
+
+                    <TextInput
+                        label="Import Group"
+                        description="Sources sharing the same group tag compete — only one is picked at random per request. Leave empty to always include this source."
+                        placeholder="e.g. provider-a"
+                        {...form.getInputProps('importGroup')}
+                        value={form.values.importGroup ?? ''}
+                        onChange={(e) =>
+                            form.setFieldValue('importGroup', e.currentTarget.value || null)
+                        }
                     />
 
                     <Switch

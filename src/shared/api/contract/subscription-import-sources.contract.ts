@@ -30,6 +30,7 @@ export const SubscriptionImportSourceSchema = z.object({
     lastFetchStatus: z.nativeEnum(IMPORT_FETCH_STATUS).nullable(),
     lastFetchError: z.string().nullable(),
     lastHostsCount: z.number().int().nullable(),
+    importGroup: z.string().nullable(),
     fetchHeaders: z.record(z.string()).nullable(),
     createdAt: z
         .string()
@@ -87,6 +88,7 @@ export namespace CreateSubscriptionImportSourceContract {
         isEnabled: z.boolean().default(true),
         fetchIntervalMinutes: z.number().int().min(5).max(1440).default(60),
         configProfileInboundUuid: z.string().uuid().nullable().optional(),
+        importGroup: z.string().min(1).max(100).nullable().optional(),
         fetchHeaders: z.record(z.string()).nullable().optional(),
     })
     export type Request = z.infer<typeof RequestSchema>
@@ -111,6 +113,7 @@ export namespace UpdateSubscriptionImportSourceContract {
         isEnabled: z.boolean().optional(),
         fetchIntervalMinutes: z.number().int().min(5).max(1440).optional(),
         configProfileInboundUuid: z.string().uuid().nullable().optional(),
+        importGroup: z.string().min(1).max(100).nullable().optional(),
         fetchHeaders: z.record(z.string()).nullable().optional(),
     })
     export type Request = z.infer<typeof RequestSchema>
