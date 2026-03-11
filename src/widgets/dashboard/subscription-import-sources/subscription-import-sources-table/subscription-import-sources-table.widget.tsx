@@ -9,6 +9,36 @@ import {
     Text,
     Tooltip
 } from '@mantine/core'
+
+function formatBytes(bytes: number): string {
+    if (bytes === 0) return '0 B'
+    const units = ['B', 'KB', 'MB', 'GB', 'TB', 'PB']
+    const i = Math.floor(Math.log(bytes) / Math.log(1024))
+    return `${(bytes / Math.pow(1024, i)).toFixed(2)} ${units[i]}`
+}
+
+function TrafficInfo({ source }: { source: { lastUploadBytes: number | null; lastDownloadBytes: number | null; lastTotalBytes: number | null; lastExpireAt: Date | null } }) {
+    const hasTraffic = source.lastUploadBytes !== null || source.lastDownloadBytes !== null
+    if (!hasTraffic) return <Text c="dimmed" size="xs">—</Text>
+
+    const upload = source.lastUploadBytes ?? 0
+    const download = source.lastDownloadBytes ?? 0
+    const total = source.lastTotalBytes ?? 0
+    const used = upload + download
+    const expire = source.lastExpireAt ? new Date(source.lastExpireAt) : null
+
+    return (
+        <Stack gap={2}>
+            <Text size="xs">↑ {formatBytes(upload)} / ↓ {formatBytes(download)}</Text>
+            {total > 0 && (
+                <Text c="dimmed" size="xs">Limit: {formatBytes(total)} (used {formatBytes(used)})</Text>
+            )}
+            {expire && (
+                <Text c="dimmed" size="xs">Exp: {expire.toLocaleDateString()}</Text>
+            )}
+        </Stack>
+    )
+}
 import { modals } from '@mantine/modals'
 import { useTranslation } from 'react-i18next'
 import { TbPencil, TbRefresh, TbTrash } from 'react-icons/tb'
@@ -114,6 +144,7 @@ export function SubscriptionImportSourcesTableWidget(props: IProps) {
                         <Table.Th>Last Fetch</Table.Th>
                         <Table.Th>Status</Table.Th>
                         <Table.Th>Hosts</Table.Th>
+                        <Table.Th>Traffic</Table.Th>
                         <Table.Th>Enabled</Table.Th>
                         <Table.Th />
                     </Table.Tr>
@@ -144,6 +175,9 @@ export function SubscriptionImportSourcesTableWidget(props: IProps) {
                             </Table.Td>
                             <Table.Td>
                                 <Text size="sm">{source.lastHostsCount ?? '—'}</Text>
+                            </Table.Td>
+                            <Table.Td>
+                                <TrafficInfo source={source} />
                             </Table.Td>
                             <Table.Td>
                                 <Switch

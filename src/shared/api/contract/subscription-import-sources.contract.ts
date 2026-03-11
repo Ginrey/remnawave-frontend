@@ -32,6 +32,14 @@ export const SubscriptionImportSourceSchema = z.object({
     lastHostsCount: z.number().int().nullable(),
     importGroup: z.string().nullable(),
     fetchHeaders: z.record(z.string()).nullable(),
+    lastUploadBytes: z.number().nullable(),
+    lastDownloadBytes: z.number().nullable(),
+    lastTotalBytes: z.number().nullable(),
+    lastExpireAt: z
+        .string()
+        .datetime()
+        .nullable()
+        .transform((str) => (str ? new Date(str) : null)),
     createdAt: z
         .string()
         .datetime()
