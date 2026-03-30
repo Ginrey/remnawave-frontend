@@ -26,7 +26,10 @@
         "srh-inspector": "SRH Inspector",
         "response-rules": "Response Rules",
         "remnawave-settings": "Remnawave Settings",
-        "subscription-import-sources": "Import Sources"
+        "subscription-import-sources": "Import Sources",
+        "node-plugins": "Plugins",
+        "tb-reports": "Torrent Blocker Reports",
+        "sessions-explorer": "Sessions Explorer"
     },
     "common": {
         "delete": "Delete",
@@ -385,18 +388,14 @@
         "sni-description-line-1": "SNI stands for Server Name Indication.",
         "sni-description-line-2": "If not specified, the value from config's inbound will be used.",
         "host-visibility": "Host Visibility",
-        "server-description-description": "Only for Happ.",
         "select-one-inbound-to-apply-to-the-host": "Select an inbound to apply to the host",
         "server-description-header": "Server Description",
-        "server-description-line-1": "This feature works only with Happ with the ProviderID value. Please, refer to",
-        "server-description-line-2": "Happ documentation",
-        "server-description-line-3": "for more information.",
-        "server-description-line-4": "Remnawave will encode this value to base64. Do not place encoded value here.",
         "server-description-placeholder": "Maximum 30 characters",
         "this-will-only-be-used-for-xray-json-output": "This will only be used for Xray-JSON output.",
         "please-ensure-you-provide-a-valid-json-mux-object": "Please ensure you provide a valid JSON MUX object.",
         "for-more-information-refer-to": "For more information, refer to",
         "xtls-documentation": "XTLS documentation",
+        "final-mask-description": "The finalMask override allows you to fine-tune the finalMask in cases where the server-side and client-side finalMask configurations need to differ.<br/><br/>FinalMask will only be applied to Xray-JSON and Base64 client output formats.<br/><br/>Make sure to review the <anchor>Xray documentation</anchor>.",
         "paste-default-mux-params": "Paste default Mux Params",
         "please-ensure-you-provide-a-valid-json-sockopt-object": "Please ensure you provide a valid JSON Sockopt object.",
         "paste-default-sockopt-params": "Paste default Sockopt Params",
@@ -435,7 +434,10 @@
         "keep-sni-blank-description": "In some cases, SNI must be left blank. Use this option to force an empty SNI. Note that this option has the highest priority, so it will be applied even if SNI is already set.",
         "select-one-or-more-subscription-types-description": "Select one or more subscription types to exclude host from that subscription type.",
         "exclude-from-subscription-type": "Exclude from Subscription Type",
-        "hidden-host-description": "By default, Remnawave will not include hidden hosts in the subscription. Hidden host can be used with Mihomo and Xray-Json Advanced, Raw."
+        "hidden-host-description": "By default, Remnawave will not include hidden hosts in the subscription. Hidden host can be used with Mihomo and Xray-Json Advanced, Raw.",
+        "server-description-1": "In supported clients, the protocol name (e.g. vless) will be replaced with the description specified here.",
+        "server-description-2": "Not all client applications support this feature. For more details, refer to the documentation of the apps listed below.",
+        "supported-clients": "Supported clients"
     },
     "base-node-form": {
         "country": "Country",
@@ -515,14 +517,16 @@
             "reset-monthly": "Reset monthly",
             "reset-weekly": "Reset weekly",
             "reset-daily": "Reset daily",
-            "never-reset": "Never reset"
+            "never-reset": "Never reset",
+            "reset-monthly-by-creation-date": "Reset monthly (by creation date)"
         }
     },
     "data-usage": {
         "column": {
             "monthly": "Monthly",
             "weekly": "Weekly",
-            "daily": "Daily"
+            "daily": "Daily",
+            "monthly-rolling": "Monthly (rolling)"
         }
     },
     "get-time-ago": {
@@ -775,10 +779,11 @@
         "widget": {
             "title": "Active Sessions",
             "requirements": "Requirements",
-            "warning-activity": "IP addresses will only be shown if there was activity within the last <highlight>20 seconds</highlight>",
+            "warning-activity": "An IP address will be shown when <highlight>Xray-Core</highlight> considers the <highlight>connection still open</highlight>. This may result in some displayed IP addresses that are no longer actually connected. Use the <highlight>clock</highlight> icon to track the last activity of a given IP.",
             "warning-version": "Remnawave Node version <highlight>{{version}}</highlight> or higher",
             "warning-docker": "Add the following to <highlight>docker-compose.yml</highlight> of Remnawave Node (/opt/remnanode)",
             "warning-patience": "Fetching data may take some time, do not close this window!",
+            "warning-n-plus-one": "<highlight>Please note</highlight>: this request performs <highlight>N+1</highlight> operations to gRPC API of <highlight>Xray-Core</highlight> due to the lack of bulk data retrieval methods. <highlight>N</highlight> is the number of users currently online on the given node.",
             "get-data": "Get Data",
             "fetching": "Fetching active sessions...",
             "progress": "Completed {{completed}} of {{total}} nodes",
@@ -834,7 +839,7 @@
             "show-custom-remarks": "Show custom remarks",
             "show-custom-remark-description-line-1": "Only for EXPIRED, LIMITED and DISABLED users.",
             "show-custom-remark-description-line-2": "If this setting is disabled, EXPIRED, LIMITED and DISABLED users will receive an actual empty host list instead.",
-            "additional-response-headers": "Additional response headers",
+            "additional-response-headers": "Response headers",
             "headers-that-will-be-sent-with-subscription-content": "Headers that will be sent with the subscription content.",
             "randomize-hosts": "Randomize hosts",
             "randomize-hosts-description": "Randomize hosts in subscription content",
@@ -855,7 +860,12 @@
             "total-download": "Total download",
             "average-bps": "Average BPS",
             "active-nodes": "Active nodes",
-            "current-hour": "Current hour"
+            "current-hour": "Current hour",
+            "download-speed": "Download Speed",
+            "upload-speed": "Upload Speed",
+            "download-total": "Download Total",
+            "ram-usage": "RAM Usage",
+            "for-all-nodes": "For all nodes"
         }
     },
     "node-users-usage-drawer": {
@@ -1216,8 +1226,6 @@
                 "choose-an-inbound-to-apply-to-the-host": "Choose an inbound to apply to the host.",
                 "apply-changes": "Apply changes",
                 "search-profiles-or-inbounds": "Search profiles or inbounds...",
-                "hosts-do-not-support-multiple-inbounds": "Hosts do not support multiple inbounds",
-                "not-supported": "Not supported",
                 "no-profiles-or-inbounds-found": "No profiles or inbounds found",
                 "no-config-profiles-available": "No config profiles available"
             }
@@ -1323,6 +1331,20 @@
             "additional-languages": "Additional Languages",
             "english-is-always-enabled": "English is always enabled",
             "english": "English"
+        }
+    },
+    "node-system-card": {
+        "widget": {
+            "system-info": "System Info",
+            "memory": "Memory",
+            "used": "Used",
+            "free": "Free",
+            "total": "Total",
+            "system": "System",
+            "system-uptime": "System Uptime",
+            "network": "Network",
+            "kernel": "Kernel",
+            "interface": "Interface"
         }
     },
     "node-stats": {
@@ -1567,11 +1589,6 @@
             "title": "Password"
         },
         "telegram": {
-            "botToken": {
-                "label": "Bot Token",
-                "description": "Telegram bot token",
-                "placeholder": "Enter bot token"
-            },
             "adminIds": {
                 "label": "Allowed Admin IDs",
                 "description": "List of allowed admin IDs",
@@ -1959,5 +1976,160 @@
     },
     "traffic-limits-card": {
         "traffic-and-limits": "Traffic & Limits"
+    },
+    "node-plugin-editor-page": {
+        "component": {
+            "plugin-editor": "Plugin Editor"
+        }
+    },
+    "node-vitals": {
+        "card": {
+            "plugin": "Plugin",
+            "review-documentation-for-more-information": "Review documentation for more information.",
+            "nothing-found": "Nothing found...",
+            "select-plugin": "Select plugin"
+        }
+    },
+    "node-plugin-card": {
+        "widget": {
+            "active-on-nodes": "Active on Nodes"
+        }
+    },
+    "adtive-on-nodes": {
+        "modal": {
+            "shared": {
+                "this-plugin-is-not-active-on-any-nodes": "This plugin is not active on any nodes."
+            }
+        }
+    },
+    "node-plugins-grid": {
+        "widget": {
+            "node-plugins-are-an-advanced-feature-please-review-the-documentation-before-use": "Node Plugins are an advanced feature. Please review the documentation before use.",
+            "warning": "Warning",
+            "no-node-plugins-yet": "No node plugins yet",
+            "create-a-plugin-to-extend-node-capabilities-with": "Create a plugin to extend node capabilities with"
+        }
+    },
+    "node-plugin-executor": {
+        "content": {
+            "enter-at-least-one-ip-address": "Enter at least one IP address.",
+            "block-specific-ip-addresses-on-selected-nodes": "Block specific IP addresses on selected nodes",
+            "block-ips": "Block IPs",
+            "remove-ip-blocks-on-selected-nodes": "Remove IP blocks on selected nodes",
+            "unblock-ips": "Unblock IPs",
+            "executor-description": "IP blocks are temporary — they persist only until the node or its core restarts. Blocks may also be reset if the plugin configuration changes.",
+            "recreate-nftables-rules-on-selected-nodes": "Recreate nftables rules on selected nodes",
+            "recreate-tables": "Recreate Tables",
+            "block-ips-decription": "One entry per line. Timeout 0 = block until restart.",
+            "unblock-ips-decription": "One IP address per line.",
+            "ips-to-block": "IPs to block",
+            "ips-to-unblock": "IPs to unblock",
+            "format-one-per-line": "Format (one per line):",
+            "next": "Next",
+            "no-connected-nodes-available": "No connected nodes available.",
+            "deselect-all": "Deselect all",
+            "select-all": "Select all",
+            "execute": "Execute"
+        }
+    },
+    "torrent-blocker-stats": {
+        "widget": {
+            "total-reports": "Total Reports",
+            "distinct-nodes": "Distinct Nodes",
+            "distinct-users": "Distinct Users",
+            "last-24-hours": "Last 24 Hours",
+            "by-report-count": "By report count",
+            "top-users": "Top Users"
+        }
+    },
+    "torrent-blocker-reports-table": {
+        "widget": {
+            "truncate-reports": "Truncate reports",
+            "truncate-reports-description": "All Torrent Blocker reports will be permanently deleted."
+        }
+    },
+    "node-active-session": {
+        "item": {
+            "widget": {
+                "view-user": "View User"
+            }
+        }
+    },
+    "node-active-sessions": {
+        "drawer": {
+            "widget": {
+                "active-users-on-this-node": "Active users on this node"
+            }
+        }
+    },
+    "nodes-datatable": {
+        "widget": {
+            "column-width": "Column Width",
+            "column-order": "Column Order",
+            "column-toggle": "Column Toggle"
+        }
+    },
+    "user-torrent-blocker-report-item": {
+        "processed-at": "Processed At",
+        "unblocked-at": "Unblocked At"
+    },
+    "get-user-torrent-blocker-reports": {
+        "feature": {
+            "blocker-reports": "Blocker Reports"
+        }
+    },
+    "user-torrent-blocker-reports": {
+        "drawer": {
+            "widget": {
+                "total-reports": "Total reports"
+            }
+        }
+    },
+    "user-subscription-requests-drawer": {
+        "widget": {
+            "total-records": "Total records"
+        }
+    },
+    "sessions-explorer-idle": {
+        "description-1": "This operation may take a while depending on the number of nodes and users. Sessions are fetched sequentially to avoid overloading the backend.",
+        "start-exploring": "Start exploring"
+    },
+    "sessions-explorer-progress": {
+        "exploring-nodes": "Exploring nodes...",
+        "nodes-processed": "{{completed}} of {{total}} nodes processed",
+        "nodes-failed": "{{count}} failed"
+    },
+    "sessions-explorer": {
+        "widget": {
+            "all-nodes-failed-to-return-session-data": "All nodes failed to return session data.",
+            "total-ips": "Total IPs",
+            "unique-ips": "Unique IPs",
+            "nodes-explored": "Nodes Explored",
+            "total-users": "Total Users",
+            "no-active-sessions-found-on-any-node": "No active sessions found on any node.",
+            "restart-scan": "Restart scan",
+            "clear-results": "Clear results",
+            "search-by-ip": "Search by IP address...",
+            "no-results-for-ip": "No users found with IP matching \"{{ip}}\""
+        }
+    },
+    "mobile-stats": {
+        "widget": {
+            "billing-nodes": "Billing nodes",
+            "upcoming": "Upcoming",
+            "per-month": "Per month",
+            "total-spent": "Total spent"
+        }
+    },
+    "mobile-providers-list": {
+        "widget": {
+            "invoices": "Invoices"
+        }
+    },
+    "mobile-infra-billing": {
+        "widget": {
+            "history": "History",
+            "providers": "Providers"
+        }
     }
 }

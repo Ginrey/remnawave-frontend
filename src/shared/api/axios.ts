@@ -13,7 +13,15 @@ let BASE_DOMAIN = __DOMAIN_BACKEND__
 const isDev = __NODE_ENV__ === 'development'
 const isDomainOverride = __DOMAIN_OVERRIDE__ === '1'
 
-BASE_DOMAIN = window.location.origin
+if (isDev) {
+    BASE_DOMAIN = __DOMAIN_BACKEND__
+} else {
+    BASE_DOMAIN = window.location.origin
+}
+
+if (isDomainOverride) {
+    BASE_DOMAIN = __DOMAIN_BACKEND__
+}
 
 export const instance = axios.create({
     baseURL: BASE_DOMAIN,

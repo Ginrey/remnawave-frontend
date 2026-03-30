@@ -1,4 +1,9 @@
-import { GetOneNodeCommand, GetPubKeyCommand, UpdateNodeCommand } from '@remnawave/backend-contract'
+import {
+    GetNodePluginsCommand,
+    GetOneNodeCommand,
+    GetPubKeyCommand,
+    UpdateNodeCommand
+} from '@remnawave/backend-contract'
 import { Button, CopyButton, em, Group, Menu, px, Stack } from '@mantine/core'
 import { PiFloppyDiskDuotone } from 'react-icons/pi'
 import { UseFormReturnType } from '@mantine/form'
@@ -9,8 +14,6 @@ import { ReactNode } from 'react'
 import { t } from 'i18next'
 
 import { ToggleNodeStatusButtonFeature } from '@features/ui/dashboard/nodes/toggle-node-status-button'
-import { GetNodeLinkedHostsFeature } from '@features/ui/dashboard/nodes/get-node-linked-hosts'
-import { GetNodeUsersUsageFeature } from '@features/ui/dashboard/nodes/get-node-users-usage'
 import { RestartNodeButtonFeature } from '@features/ui/dashboard/nodes/restart-node-button'
 import { ResetNodeTrafficFeature } from '@features/ui/dashboard/nodes/reset-node-traffic'
 import { ModalAccordionWidget } from '@widgets/dashboard/nodes/modal-accordeon-widget'
@@ -44,25 +47,25 @@ const cardVariants = {
 }
 
 interface IProps<T extends UpdateNodeCommand.Request> {
-    advancedOpened: boolean
     form: UseFormReturnType<T>
     handleClose: () => void
     handleSubmit: () => void
     isDataSubmitting: boolean
     node: GetOneNodeCommand.Response['response']
     nodeDetailsCard?: ReactNode
+    nodePlugins: GetNodePluginsCommand.Response['response']['nodePlugins']
+    nodeSystemCard?: ReactNode
     pubKey: GetPubKeyCommand.Response['response'] | undefined
-    setAdvancedOpened: (value: boolean) => void
 }
 
 export const BaseNodeForm = <T extends UpdateNodeCommand.Request>(props: IProps<T>) => {
     const {
         form,
         node,
+        nodePlugins,
         pubKey,
-        advancedOpened,
-        setAdvancedOpened,
         nodeDetailsCard,
+        nodeSystemCard,
         handleClose,
         handleSubmit,
         isDataSubmitting
@@ -85,10 +88,15 @@ export const BaseNodeForm = <T extends UpdateNodeCommand.Request>(props: IProps<
                         <MotionWrapper variants={cardVariants}>{nodeDetailsCard}</MotionWrapper>
                     )}
 
+                    {nodeSystemCard && node.system && (
+                        <MotionWrapper variants={cardVariants}>{nodeSystemCard}</MotionWrapper>
+                    )}
+
                     <NodeVitalsCard
                         cardVariants={cardVariants}
                         form={form}
                         motionWrapper={MotionWrapper}
+                        nodePlugins={nodePlugins}
                         pubKey={pubKey}
                     />
 
@@ -99,11 +107,9 @@ export const BaseNodeForm = <T extends UpdateNodeCommand.Request>(props: IProps<
                     />
 
                     <NodeTrackingAndBillingCard
-                        advancedOpened={advancedOpened}
                         cardVariants={cardVariants}
                         form={form}
                         motionWrapper={MotionWrapper}
-                        setAdvancedOpened={setAdvancedOpened}
                     />
 
                     <NodeConsumptionCard
@@ -132,6 +138,7 @@ export const BaseNodeForm = <T extends UpdateNodeCommand.Request>(props: IProps<
                             cardVariants={cardVariants}
                             form={form}
                             motionWrapper={MotionWrapper}
+                            nodePlugins={nodePlugins}
                             pubKey={pubKey}
                         />
 
@@ -150,6 +157,10 @@ export const BaseNodeForm = <T extends UpdateNodeCommand.Request>(props: IProps<
                         style={{ flex: '1 1 400px' }}
                         variants={containerVariants}
                     >
+                        {nodeSystemCard && node.system && (
+                            <MotionWrapper variants={cardVariants}>{nodeSystemCard}</MotionWrapper>
+                        )}
+
                         <NodeConfigProfilesCard
                             cardVariants={cardVariants}
                             form={form}
@@ -157,17 +168,15 @@ export const BaseNodeForm = <T extends UpdateNodeCommand.Request>(props: IProps<
                         />
 
                         <NodeTrackingAndBillingCard
-                            advancedOpened={advancedOpened}
                             cardVariants={cardVariants}
                             form={form}
                             motionWrapper={MotionWrapper}
-                            setAdvancedOpened={setAdvancedOpened}
                         />
                     </MotionStack>
                 </Group>
             )}
 
-            <ModalFooter>
+            <ModalFooter isMobile={isMobile}>
                 {node && (
                     <Menu keepMounted={true} position="top-end" shadow="md">
                         <Menu.Target>
@@ -196,10 +205,6 @@ export const BaseNodeForm = <T extends UpdateNodeCommand.Request>(props: IProps<
 
                             <RestartNodeButtonFeature handleClose={handleClose} node={node} />
                             <ToggleNodeStatusButtonFeature handleClose={handleClose} node={node} />
-                            <Menu.Divider />
-                            <Menu.Label>{t('base-node-form.quick-actions')}</Menu.Label>
-                            <GetNodeUsersUsageFeature nodeUuid={node.uuid} />
-                            <GetNodeLinkedHostsFeature nodeUuid={node.uuid} />
                         </Menu.Dropdown>
                     </Menu>
                 )}

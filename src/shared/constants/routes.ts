@@ -24,12 +24,18 @@ export const ROUTES = {
             INTERNAL_SQUADS: '/dashboard/management/internal-squads',
             EXTERNAL_SQUADS: '/dashboard/management/external-squads',
             SUBSCRIPTION_IMPORT_SOURCES: '/dashboard/management/subscription-import-sources',
-            REMNAWAVE_SETTINGS: '/dashboard/management/settings'
+            REMNAWAVE_SETTINGS: '/dashboard/management/settings',
+            NODE_PLUGINS: {
+                ROOT: '/dashboard/management/plugins',
+                NODE_PLUGIN_BY_UUID: '/dashboard/management/plugins/:uuid'
+            }
         },
         TOOLS: {
             ROOT: '/dashboard/tools',
             HWID_INSPECTOR: '/dashboard/tools/hwid-inspector',
-            SRH_INSPECTOR: '/dashboard/tools/srh-inspector'
+            SRH_INSPECTOR: '/dashboard/tools/srh-inspector',
+            TORRENT_BLOCKER_REPORTS: '/dashboard/tools/torrent-blocker-reports',
+            SESSIONS_EXPLORER: '/dashboard/tools/sessions-explorer'
         },
         TEMPLATES: {
             ROOT: '/dashboard/templates',

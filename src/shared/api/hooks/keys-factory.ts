@@ -11,6 +11,7 @@ import { externalSquadsQueryKeys } from './external-squads/external-squads.query
 import { subpageConfigsQueryKeys } from './subpage-configs/subpage-configs.query.hooks'
 import { bandwidthStatsQueryKeys } from './bandwidth-stats/bandwidth-stats.query.hooks'
 import { infraBillingQueryKeys } from './infra-billing/infra-billing.query.hooks'
+import { nodePluginsQueryKeys } from './node-plugins/node-plugins.query.hooks'
 import { apiTokensQueryKeys } from './api-tokens/api-tokens.query.hooks'
 import { subscriptionImportSourcesQueryKeys } from './subscription-import-sources/subscription-import-sources.query.hooks'
 import { ipControlQueryKeys } from './ip-control/ip-control.query.hooks'
@@ -43,7 +44,8 @@ export const QueryKeys = mergeQueryKeys(
     subpageConfigsQueryKeys,
     bandwidthStatsQueryKeys,
     ipControlQueryKeys,
-    subscriptionImportSourcesQueryKeys
+    subscriptionImportSourcesQueryKeys,
+    nodePluginsQueryKeys
 )
 
 export type TQueryKeys = inferQueryKeyStore<typeof QueryKeys>
