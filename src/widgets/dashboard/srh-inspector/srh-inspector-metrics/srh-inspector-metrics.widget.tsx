@@ -1,12 +1,13 @@
 /* eslint-disable no-nested-ternary */
 import { Box, Card, Center, Group, Loader, SimpleGrid, Stack, Text, ThemeIcon } from '@mantine/core'
-import { PiChartBar, PiChartPieDuotone } from 'react-icons/pi'
+import { PiChartBar, PiChartPieDuotone, PiUsersDuotone } from 'react-icons/pi'
 import { useTranslation } from 'react-i18next'
 import { Chart } from '@highcharts/react'
 import { useMemo } from 'react'
 import dayjs from 'dayjs'
 
 import { useGetSubscriptionRequestHistoryStats } from '@shared/api/hooks'
+import { MetricCardShared } from '@shared/ui/metrics/metric-card'
 
 export function SrhInspectorMetrics() {
     const { t } = useTranslation()
@@ -205,6 +206,17 @@ export function SrhInspectorMetrics() {
 
     return (
         <Stack gap="xl">
+            <SimpleGrid cols={{ base: 1, md: 2, xl: 4 }} spacing="lg">
+                <MetricCardShared
+                    iconColor="cyan"
+                    IconComponent={PiUsersDuotone}
+                    iconVariant="soft"
+                    isLoading={isLoading}
+                    title={t('srh-inspector-metrics.widget.unique-users-last-24h')}
+                    value={stats?.uniqueUsersLast24h ?? 0}
+                />
+            </SimpleGrid>
+
             <SimpleGrid cols={{ base: 1, lg: 2 }} spacing="lg">
                 <Card
                     p="lg"

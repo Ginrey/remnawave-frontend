@@ -3,4 +3,5 @@ import { TSubscriptionImportSource } from '@shared/api/contract/subscription-imp
 export interface IProps {
     importSources: TSubscriptionImportSource[]
     onEdit: (source: TSubscriptionImportSource) => void
+    refreshAllTrigger: number
 }

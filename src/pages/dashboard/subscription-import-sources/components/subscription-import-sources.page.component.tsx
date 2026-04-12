@@ -1,6 +1,6 @@
-import { Button } from '@mantine/core'
+import { Button, Group } from '@mantine/core'
 import { useDisclosure } from '@mantine/hooks'
-import { TbCloudDownload } from 'react-icons/tb'
+import { TbCloudDownload, TbRefresh } from 'react-icons/tb'
 import { useState } from 'react'
 import { motion } from 'motion/react'
 
@@ -17,6 +17,7 @@ export const SubscriptionImportSourcesPageComponent = (props: IProps) => {
 
     const [drawerOpened, { open: openDrawer, close: closeDrawer }] = useDisclosure(false)
     const [editingSource, setEditingSource] = useState<TSubscriptionImportSource | null>(null)
+    const [refreshAllTrigger, setRefreshAllTrigger] = useState(0)
 
     const handleEdit = (source: TSubscriptionImportSource) => {
         setEditingSource(source)
@@ -37,9 +38,18 @@ export const SubscriptionImportSourcesPageComponent = (props: IProps) => {
         <Page title="Import Sources">
             <PageHeaderShared
                 actions={
-                    <Button leftSection={<TbCloudDownload size={16} />} onClick={handleCreate}>
-                        Add Import Source
-                    </Button>
+                    <Group gap="sm">
+                        <Button
+                            leftSection={<TbRefresh size={16} />}
+                            onClick={() => setRefreshAllTrigger((current) => current + 1)}
+                            variant="light"
+                        >
+                            Refresh All
+                        </Button>
+                        <Button leftSection={<TbCloudDownload size={16} />} onClick={handleCreate}>
+                            Add Import Source
+                        </Button>
+                    </Group>
                 }
                 icon={<TbCloudDownload size={24} />}
                 title="Import Sources"
@@ -53,6 +63,7 @@ export const SubscriptionImportSourcesPageComponent = (props: IProps) => {
                 <SubscriptionImportSourcesTableWidget
                     importSources={importSources}
                     onEdit={handleEdit}
+                    refreshAllTrigger={refreshAllTrigger}
                 />
             </motion.div>
 

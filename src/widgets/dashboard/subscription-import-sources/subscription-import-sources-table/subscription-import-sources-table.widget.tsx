@@ -9,6 +9,9 @@ import {
     Text,
     Tooltip
 } from '@mantine/core'
+import { notifications } from '@mantine/notifications'
+import { instance } from '@shared/api/axios'
+import { FetchNowSubscriptionImportSourceContract } from '@shared/api/contract/subscription-import-sources.contract'
 
 function formatBytes(bytes: number): string {
     if (bytes === 0) return '0 B'
@@ -41,11 +44,13 @@ function TrafficInfo({ source }: { source: { lastUploadBytes: number | null; las
 }
 import { modals } from '@mantine/modals'
 import { useTranslation } from 'react-i18next'
-import { TbPencil, TbRefresh, TbTrash } from 'react-icons/tb'
+import { TbCopy, TbPencil, TbRefresh, TbTrash } from 'react-icons/tb'
 import { PiEmpty } from 'react-icons/pi'
+import { useEffect, useRef, useState } from 'react'
 
 import {
     QueryKeys,
+    useCreateSubscriptionImportSource,
     useDeleteSubscriptionImportSource,
     useFetchNowSubscriptionImportSource,
     useUpdateSubscriptionImportSource
@@ -62,9 +67,35 @@ function StatusBadge({ status }: { status: string | null }) {
     return <Badge color="yellow" variant="light">Pending</Badge>
 }
 
+const CLONED_SUFFIX = ' (cloned)'
+const IMPORT_SOURCE_NAME_LIMIT = 100
+
+function generateRandomHwid() {
+    return Array.from({ length: 16 }, () =>
+        Math.floor(Math.random() * 16).toString(16).toUpperCase()
+    ).join('')
+}
+
+function cloneImportSourceName(name: string) {
+    return `${name}${CLONED_SUFFIX}`.slice(0, IMPORT_SOURCE_NAME_LIMIT)
+}
+
+function cloneFetchHeaders(fetchHeaders: Record<string, string> | null) {
+    if (!fetchHeaders) return null
+
+    return Object.fromEntries(
+        Object.entries(fetchHeaders).map(([key, value]) => [
+            key,
+            key.toLowerCase() === 'x-hwid' ? generateRandomHwid() : value
+        ])
+    )
+}
+
 export function SubscriptionImportSourcesTableWidget(props: IProps) {
-    const { importSources, onEdit } = props
+    const { importSources, onEdit, refreshAllTrigger } = props
     const { t } = useTranslation()
+    const [isRefreshingAll, setIsRefreshingAll] = useState(false)
+    const lastRefreshAllTriggerRef = useRef(refreshAllTrigger)
 
     const { mutate: deleteSource } = useDeleteSubscriptionImportSource({
         mutationFns: {
@@ -77,6 +108,16 @@ export function SubscriptionImportSourcesTableWidget(props: IProps) {
     })
 
     const { mutate: updateSource } = useUpdateSubscriptionImportSource({
+        mutationFns: {
+            onSuccess: () => {
+                queryClient.refetchQueries({
+                    queryKey: QueryKeys.subscriptionImportSources.getAll.queryKey
+                })
+            }
+        }
+    })
+
+    const { mutate: createSource, isPending: isCloning } = useCreateSubscriptionImportSource({
         mutationFns: {
             onSuccess: () => {
                 queryClient.refetchQueries({
@@ -118,6 +159,58 @@ export function SubscriptionImportSourcesTableWidget(props: IProps) {
     const handleFetchNow = (source: TSubscriptionImportSource) => {
         fetchNow({ route: { uuid: source.uuid } })
     }
+
+    const handleClone = (source: TSubscriptionImportSource) => {
+        createSource({
+            variables: {
+                name: cloneImportSourceName(source.name),
+                url: source.url,
+                isEnabled: source.isEnabled,
+                fetchIntervalMinutes: source.fetchIntervalMinutes,
+                configProfileInboundUuid: source.configProfileInboundUuid,
+                importGroup: source.importGroup,
+                fetchHeaders: cloneFetchHeaders(source.fetchHeaders)
+            }
+        })
+    }
+
+    useEffect(() => {
+        if (refreshAllTrigger === lastRefreshAllTriggerRef.current) return
+
+        lastRefreshAllTriggerRef.current = refreshAllTrigger
+
+        const handleRefreshAll = async () => {
+            if (isRefreshingAll || importSources.length === 0) return
+
+            setIsRefreshingAll(true)
+
+            const results = await Promise.allSettled(
+                importSources.map((source) =>
+                    instance.post(FetchNowSubscriptionImportSourceContract.url(source.uuid))
+                )
+            )
+
+            const successCount = results.filter((result) => result.status === 'fulfilled').length
+            const failedCount = results.length - successCount
+
+            await queryClient.refetchQueries({
+                queryKey: QueryKeys.subscriptionImportSources.getAll.queryKey
+            })
+
+            notifications.show({
+                title: failedCount === 0 ? 'Success' : 'Refresh completed',
+                message:
+                    failedCount === 0
+                        ? `Triggered refresh for ${successCount} import sources.`
+                        : `Triggered refresh for ${successCount} import sources, ${failedCount} failed.`,
+                color: failedCount === 0 ? 'teal' : 'yellow'
+            })
+
+            setIsRefreshingAll(false)
+        }
+
+        void handleRefreshAll()
+    }, [importSources, isRefreshingAll, refreshAllTrigger])
 
     if (importSources.length === 0) {
         return (
@@ -205,6 +298,16 @@ export function SubscriptionImportSourcesTableWidget(props: IProps) {
                                             variant="subtle"
                                         >
                                             <TbPencil size={16} />
+                                        </ActionIcon>
+                                    </Tooltip>
+                                    <Tooltip label="Clone">
+                                        <ActionIcon
+                                            color="grape"
+                                            loading={isCloning}
+                                            onClick={() => handleClone(source)}
+                                            variant="subtle"
+                                        >
+                                            <TbCopy size={16} />
                                         </ActionIcon>
                                     </Tooltip>
                                     <Tooltip label="Delete">

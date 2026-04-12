@@ -79,7 +79,8 @@
         "never-online": "Never online",
         "online-this-week": "Online this week",
         "online-today": "Online today",
-        "online-now": "Online now"
+        "online-now": "Online now",
+        "subscription-updated-last-24h": "Subscription updates in last 24h"
     },
     "simple-metrics": {
         "system-uptime": "System uptime",
@@ -1437,6 +1438,7 @@
     "srh-inspector-metrics": {
         "widget": {
             "requests": "Requests",
+            "unique-users-last-24h": "Unique users in last 24h",
             "hourly-request-statistics": "Hourly Request Statistics",
             "no-hourly-data-available": "No hourly data available"
         }

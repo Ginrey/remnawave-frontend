@@ -79,7 +79,8 @@
         "never-online": "Никогда",
         "online-this-week": "На этой неделе",
         "online-today": "Сегодня",
-        "online-now": "В сети"
+        "online-now": "В сети",
+        "subscription-updated-last-24h": "Обновили подписку за 24 часа"
     },
     "simple-metrics": {
         "system-uptime": "Время работы системы",
@@ -1437,6 +1438,7 @@
     "srh-inspector-metrics": {
         "widget": {
             "requests": "Запросы",
+            "unique-users-last-24h": "Уникальные пользователи за 24 часа",
             "hourly-request-statistics": "Почасовая статистика запросов",
             "no-hourly-data-available": "Нет данных"
         }

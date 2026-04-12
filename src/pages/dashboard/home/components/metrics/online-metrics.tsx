@@ -2,6 +2,7 @@ import {
     PiClockCountdownDuotone,
     PiProhibitDuotone,
     PiPulseDuotone,
+    PiRepeatDuotone,
     PiUsersDuotone
 } from 'react-icons/pi'
 import { GetStatsCommand } from '@remnawave/backend-contract'
@@ -28,6 +29,13 @@ export const getOnlineMetrics = (
             title: t('online-metrics.online-today'),
             iconVariant: 'soft',
             iconColor: 'blue'
+        },
+        {
+            value: formatInt(onlineStats.subscriptionUpdatedLast24h) ?? 0,
+            IconComponent: PiRepeatDuotone,
+            title: t('online-metrics.subscription-updated-last-24h'),
+            iconVariant: 'soft',
+            iconColor: 'cyan'
         },
         {
             value: formatInt(onlineStats.lastWeek) ?? 0,
